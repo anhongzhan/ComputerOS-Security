@@ -1,29 +1,31 @@
 package hongzhan;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+import org.apache.log4j.*;
 import javax.swing.*;
 
 public class Adminstrator {
     
+    private static Logger logger = Logger.getLogger(Adminstrator.class);
     Map<String, ArrayList<String>> usermap = new HashMap<>();
     Map<String, String> adminmap = new HashMap<>();
     ArrayList<String> nowuser = new ArrayList<>();
     
+    Double zero = 0.0;
+    
+    
     JFrame JF1,JF2;
     JPanel JP1,JP2;
     JButton JB1;
-    JButton JB2,JB3,JB4,JB5;//存款、查询、取款、返回
+    JButton JB2,JB3,JB4,JB5;//存款(注册)、查询、取款、返回
     JLabel JL1,JL2,JL3,JL4,JL5;
     JTextField JTF1,JTF2;
     
-    @SuppressWarnings("resource")
     public void read() throws IOException{
         File file1 = new File("user.txt");
         File file2 = new File("admin.txt");
@@ -54,7 +56,7 @@ public class Adminstrator {
         JF1 = new JFrame("login");
         JP1 = new JPanel();
         JB1 = new JButton("确定");
-//        JB2 = new JButton("密码");
+        JB2 = new JButton("注册");
         JTF1 = new JTextField();
         JTF2 = new JTextField();
         
@@ -75,6 +77,8 @@ public class Adminstrator {
         
         JB1.setBounds(10,80,80,25);
         JP1.add(JB1);
+        JB2.setBounds(10,110,80,25);
+        JP1.add(JB2);
         JP1.setLayout(null);
         
         /*设置JButton监听*/
@@ -91,17 +95,30 @@ public class Adminstrator {
                         nowuser.add(JTF2.getText());
                         nowuser.add(usermap.get(JTF1.getText()).get(1));
                         JF1.dispose();
+                        logger.info(nowuser.get(0)+"登陆");
                         operate();
                     }else{
                         //密码错误
                         JF1.dispose();
+                        logger.error(nowuser.get(0)+"密码输入错误，登陆失败");
                         Error("密码错误", 0);
                     }
                 }else{
                     //用户名错误
                     JF1.dispose();
+                    logger.equals("用户名错误，登陆失败");
                     Error("用户名错误", 0);
                 }
+            }
+        });
+        
+        JB2.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                JF1.dispose();
+                register();
             }
         });
         JF1.add(JP1);
@@ -110,6 +127,94 @@ public class Adminstrator {
         JF1.setSize(350, 200);
         JF1.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
+    
+    public void register() {
+        JF1 = new JFrame("register");
+        JP1 = new JPanel();
+        JB1 = new JButton("确定");
+       // JB2 = new JButton("注册");
+        JTF1 = new JTextField();
+        JTF2 = new JTextField();
+        
+        JL1 = new JLabel("账号");
+        JL2 = new JLabel("密码");
+        JL1.setBounds(10,20,80,25);
+        JL2.setBounds(10,50,80,25);
+        JP1.add(JL1);
+        JP1.add(JL2);
+        
+        //JL1.setBounds(10,20,80,25);
+        //JP1.add(JL1);
+        
+        JTF1.setBounds(100, 20, 165, 25);
+        JP1.add(JTF1);
+        JTF2.setBounds(100, 50, 165, 25);
+        JP1.add(JTF2);
+        
+        JB1.setBounds(10,80,80,25);
+        JP1.add(JB1);
+    //    JB2.setBounds(10,110,80,25);
+    //    JP1.add(JB2);
+        JP1.setLayout(null);
+        
+        /*设置JButton监听*/
+        JB1.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+               // System.out.println("账号："+JTF1.getText());
+              //  System.out.println("密码:"+JTF2.getText());
+                if(usermap.containsKey(JTF1.getText())){
+                    logger.error("注册失败");
+                    Error("此用户已存在", 0);                    
+                }else{
+                    //密码不为空
+                    if(JTF2.getText() != null){
+                        JF1.dispose();
+                        logger.info("注册成功");
+                        addUser(JTF1.getText(), JTF2.getText());
+                        try {
+                            read();
+                        } catch (IOException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        }
+                        init();
+                    }else{
+                        logger.error("密码为空，注册失败");
+                        Error("密码为空", 0);
+                    }
+                    
+                }
+            }
+        });
+        
+        JF1.add(JP1);
+        
+        JF1.setVisible(true);
+        JF1.setSize(350, 200);
+        JF1.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    }
+    
+    public void addUser(String name, String passwd) {
+        try {
+            FileWriter writer = new FileWriter("user.txt");
+            for(Map.Entry<String, ArrayList<String>> entry : usermap.entrySet()){             
+                writer.write(entry.getKey() + " ");
+                writer.write(entry.getValue().get(0) + " ");
+                writer.write(entry.getValue().get(1) + " \n");
+            }
+            writer.write(name + " ");
+            writer.write(passwd + " ");            
+            writer.write(Double.toString(zero));
+            writer.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
     
     public void approve(String name, String money, int flag){//管理员认证界面
         JF2 = new JFrame("管理员认证");              //flag=0存款              flag=1取款
@@ -162,8 +267,10 @@ public class Adminstrator {
                         double d;
                         if(flag==1){
                             d = Double.valueOf(nowuser.get(2).toString()) - Double.valueOf(money.toString());                                
+                            logger.info(nowuser.get(0)+"取款成功"+"  "+money);
                         }else{
                             d = Double.valueOf(nowuser.get(2).toString()) + Double.valueOf(money.toString());
+                            logger.info(nowuser.get(0)+"存款成功"+"  "+money);
                         }
                         nowuser.set(2, Double.toString(d));
                         usermap.get(nowuser.get(0)).set(1, Double.toString(d));
@@ -173,11 +280,13 @@ public class Adminstrator {
                     }else{
                         JF1.dispose();
                         JF2.dispose();
+                        logger.error("管理员密码输入错误");
                         Error("密码错误", 1);
                     }
                 }else{
                     JF1.dispose();
                     JF2.dispose();
+                    logger.error("用户名错误,管理员登陆失败");
                     Error("用户名错误", 1);
                 }
             }
@@ -191,6 +300,7 @@ public class Adminstrator {
     }
     
     public void Error(String error, int flag) {//错误界面，flag=0返回init   flag=1返回operate
+        logger.error(error);
         JF1 = new JFrame("错误");
         JP1 = new JPanel();
         JB1 = new JButton("确定");
@@ -227,7 +337,6 @@ public class Adminstrator {
         try {
             FileWriter writer = new FileWriter("user.txt");
             for(Map.Entry<String, ArrayList<String>> entry : usermap.entrySet()){
-                ArrayList<String> list1 = new ArrayList<>();
                 if(entry.getKey().equals(nowuser.get(0))){
                     writer.write(nowuser.get(0) + " ");
                     writer.write(nowuser.get(1) + " ");
@@ -262,9 +371,11 @@ public class Adminstrator {
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
                 if(Double.valueOf(nowuser.get(2).toString()) >= Double.valueOf(JTF1.getText().toString())){
+                    logger.info(nowuser.get(0)+"请求取款");
                     approve(nowuser.get(0), JTF1.getText(), 1);
                 }  else{
                     //钱不够
+                    logger.error(nowuser.get(0)+"取款超过限制");
                     JF1.dispose();
                     Error("钱不够", 1);
                 }
@@ -332,6 +443,7 @@ public class Adminstrator {
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
                 JF1.dispose();
+                logger.info(nowuser.get(0)+"查询余额");
                 find();
             }
         });
@@ -344,6 +456,8 @@ public class Adminstrator {
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
                 JF1.dispose();
+                logger.info(nowuser.get(0)+"退出登陆");
+                nowuser = new ArrayList<>();
                 init();
             }
         });
@@ -403,7 +517,8 @@ public class Adminstrator {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub          
+                // TODO Auto-generated method stub  
+                logger.info(nowuser.get(0)+"请求存款"+"  "+JTF1.getText());
                 approve(nowuser.get(0), JTF1.getText(), 0);
             }
         });
@@ -440,7 +555,7 @@ public class Adminstrator {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+ //       logger.debug("This is debug message.");
 //        System.out.println(adminstrator.usermap.size());
 //        System.out.println(adminstrator.adminmap.size());
         adminstrator.init();

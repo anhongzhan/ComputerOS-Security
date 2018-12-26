@@ -1,0 +1,15 @@
+2018-12-26 23:48:59  [ AWT-EventQueue-0:0 ] - [ INFO ]  anhongzhan登陆
+2018-12-26 23:49:01  [ AWT-EventQueue-0:2089 ] - [ INFO ]  anhongzhan查询余额
+2018-12-26 23:49:05  [ AWT-EventQueue-0:6608 ] - [ INFO ]  anhongzhan请求取款
+2018-12-26 23:49:14  [ AWT-EventQueue-0:15052 ] - [ INFO ]  anhongzhan取款成功  10
+2018-12-26 23:49:19  [ AWT-EventQueue-0:20434 ] - [ INFO ]  anhongzhan请求存款  100
+2018-12-26 23:49:27  [ AWT-EventQueue-0:28206 ] - [ INFO ]  anhongzhan存款成功  100
+2018-12-26 23:49:28  [ AWT-EventQueue-0:29489 ] - [ INFO ]  anhongzhan查询余额
+2018-12-26 23:51:27  [ AWT-EventQueue-0:0 ] - [ ERROR ]  用户名错误
+2018-12-26 23:51:34  [ AWT-EventQueue-0:7495 ] - [ INFO ]  anhongzhan登陆
+2018-12-26 23:51:38  [ AWT-EventQueue-0:11329 ] - [ ERROR ]  anhongzhan取款超过限制
+2018-12-26 23:51:38  [ AWT-EventQueue-0:11346 ] - [ ERROR ]  钱不够
+2018-12-26 23:51:44  [ AWT-EventQueue-0:17053 ] - [ INFO ]  anhongzhan请求取款
+2018-12-26 23:51:48  [ AWT-EventQueue-0:20700 ] - [ ERROR ]  用户名错误,管理员登陆失败
+2018-12-26 23:51:48  [ AWT-EventQueue-0:20700 ] - [ ERROR ]  用户名错误
+2018-12-26 23:51:49  [ AWT-EventQueue-0:22457 ] - [ INFO ]  anhongzhan退出登陆
